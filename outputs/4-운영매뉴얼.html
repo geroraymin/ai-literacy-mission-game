@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI 연구소 탐험대 — 운영 매뉴얼</title>
+<style>
+  :root {
+    --night: #262137; --panel: #fff3e0; --panel-dark: #f3dfc1;
+    --ink: #3d3327; --brown: #6e5a47; --orange: #ff9752; --orange-deep: #e07a35;
+    --yellow: #ffd76a; --green: #57b06b; --red: #e2606b; --blue: #5ca8e8; --gray: #9a8f80;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', sans-serif;
+    background: #efe8db; color: var(--ink); line-height: 1.7; word-break: keep-all;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  header.hero {
+    background: var(--night); color: var(--panel); border-radius: 14px;
+    padding: 36px 32px; margin-bottom: 28px; border: 3px solid var(--brown);
+  }
+  .hero .tag { display: inline-block; background: var(--blue); color: #fff; font-size: 13px;
+    padding: 3px 12px; border-radius: 20px; margin-bottom: 10px; }
+  .hero h1 { font-size: 30px; margin-bottom: 6px; }
+  .hero h1 .em { color: var(--yellow); }
+  .hero p { color: #cfc8e0; font-size: 15px; }
+  .hero .links { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero .links a {
+    display: inline-block; background: var(--orange); color: var(--night); font-weight: 700;
+    text-decoration: none; padding: 10px 18px; border-radius: 8px; font-size: 14px;
+    box-shadow: 0 3px 0 rgba(0,0,0,.4);
+  }
+  .hero .links a.sub { background: var(--panel-dark); }
+
+  nav.toc {
+    background: var(--panel); border: 2px solid var(--brown); border-radius: 12px;
+    padding: 18px 22px; margin-bottom: 28px; font-size: 14px;
+  }
+  nav.toc strong { display: block; margin-bottom: 8px; color: var(--brown); }
+  nav.toc ol { padding-left: 20px; columns: 2; }
+  nav.toc a { color: var(--ink); text-decoration: none; }
+  nav.toc a:hover { color: var(--orange-deep); }
+
+  section {
+    background: var(--panel); border: 2px solid var(--brown); border-radius: 12px;
+    padding: 26px 28px; margin-bottom: 24px;
+  }
+  h2 {
+    font-size: 21px; margin-bottom: 16px; padding-bottom: 10px;
+    border-bottom: 3px solid var(--yellow); display: flex; align-items: center; gap: 10px;
+  }
+  h2 .no {
+    background: var(--orange); color: #fff; width: 30px; height: 30px; border-radius: 8px;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0;
+  }
+  h3 { font-size: 16px; margin: 20px 0 8px; color: var(--orange-deep); }
+  p { margin-bottom: 10px; font-size: 15px; }
+  ul, ol { padding-left: 22px; margin-bottom: 10px; font-size: 15px; }
+  li { margin-bottom: 4px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px; font-size: 14px; }
+  th { background: var(--panel-dark); color: var(--brown); text-align: left; }
+  th, td { border: 1px solid #d9c9ae; padding: 9px 12px; vertical-align: top; }
+  tr:nth-child(even) td { background: #fffaf1; }
+
+  code, .path {
+    font-family: Consolas, monospace; background: #efe3cd; border-radius: 4px;
+    padding: 1px 6px; font-size: 13px; color: #7a4a1f;
+  }
+  pre {
+    background: var(--night); color: #e8e2f5; border-radius: 8px; padding: 14px 18px;
+    font-family: Consolas, monospace; font-size: 13.5px; overflow-x: auto; margin: 10px 0 16px;
+    line-height: 1.6;
+  }
+  pre .c { color: #8f86ad; }
+
+  .box { border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 14px; border: 2px solid; }
+  .box.tip  { background: #eaf7ee; border-color: var(--green); }
+  .box.warn { background: #fdeeef; border-color: var(--red); }
+  .box.info { background: #eaf3fc; border-color: var(--blue); }
+  .box strong:first-child { display: block; margin-bottom: 4px; }
+
+  .steps { counter-reset: step; list-style: none; padding: 0; }
+  .steps li {
+    counter-increment: step; position: relative; padding: 10px 14px 10px 48px;
+    background: #fffaf1; border: 1px solid #e3d5bb; border-radius: 8px; margin-bottom: 8px;
+  }
+  .steps li::before {
+    content: counter(step); position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    background: var(--yellow); color: var(--ink); font-weight: 700; width: 26px; height: 26px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;
+  }
+
+  .badge-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .badge-chip {
+    background: var(--panel-dark); border: 2px solid var(--brown); border-radius: 8px;
+    padding: 8px 14px; font-size: 13px; text-align: center;
+  }
+  .badge-chip b { display: block; font-size: 18px; }
+
+  kbd {
+    background: #fff; border: 1px solid #c9b998; border-bottom-width: 3px;
+    border-radius: 5px; padding: 1px 8px; font-family: Consolas, monospace; font-size: 13px;
+  }
+  footer { text-align: center; color: var(--gray); font-size: 12.5px; margin-top: 30px; }
+
+  @media print {
+    body { background: #fff; }
+    .wrap { max-width: 100%; padding: 0; }
+    header.hero { border-radius: 0; }
+    section { break-inside: avoid; border-color: #bbb; }
+    .hero .links a { box-shadow: none; }
+    nav.toc { display: none; }
+  }
+  @media (max-width: 600px) { nav.toc ol { columns: 1; } h2 { font-size: 18px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <span class="tag">교사용 운영 매뉴얼</span>
+  <h1>🔬 AI 연구소 <span class="em">탐험대</span></h1>
+  <p>중학생 대상 AI 리터러시 미션 게임 · 45분 차시용 · 2026-07-07 기준</p>
+  <div class="links">
+    <a href="https://geroraymin.github.io/ai-literacy-mission-game/" target="_blank">🎮 게임 바로가기</a>
+    <a class="sub" href="https://github.com/geroraymin/ai-literacy-mission-game" target="_blank">📦 GitHub 저장소</a>
+  </div>
+</header>
+
+<nav class="toc">
+  <strong>목차</strong>
+  <ol>
+    <li><a href="#s1">게임 소개 · 학습 목표</a></li>
+    <li><a href="#s2">실행 방법 (상황별 3가지)</a></li>
+    <li><a href="#s3">조작법</a></li>
+    <li><a href="#s4">45분 수업 운영</a></li>
+    <li><a href="#s5">미션별 토론 질문</a></li>
+    <li><a href="#s6">내용 수정 가이드</a></li>
+    <li><a href="#s7">수정 → 인터넷 반영 절차</a></li>
+    <li><a href="#s8">문제 해결 (FAQ)</a></li>
+    <li><a href="#s9">파일 구조 · 라이선스</a></li>
+  </ol>
+</nav>
+
+<!-- 1 -->
+<section id="s1">
+  <h2><span class="no">1</span>게임 소개 · 학습 목표</h2>
+  <p>플레이어는 AI 연구소의 신입 탐험 대원이 되어, 잘못된 사용법 때문에 고장 난 AI 비서 <b>"아리"</b>를 구하기 위해 다섯 개의 방을 탐험합니다. 방마다 연구원 NPC가 내는 퀴즈 미션(각 4문항)을 해결하면 배지를 얻고, 5개를 모으면 엔딩에서 칭호와 복습 카드를 받습니다.</p>
+  <table>
+    <tr><th style="width:150px">방 (미션)</th><th>학습 주제</th><th style="width:110px">배지</th></tr>
+    <tr><td>보안실</td><td>개인정보 보호 — AI에게 보내면 안 되는 정보 구분</td><td>🔒 개인정보 지킴이</td></tr>
+    <tr><td>프롬프트 랩</td><td>프롬프트 작성 — 역할·대상·형식이 있는 좋은 질문</td><td>✏️ 프롬프트 장인</td></tr>
+    <tr><td>데이터실</td><td>데이터 편향 — 치우친 데이터가 만드는 치우친 AI</td><td>⚖️ 편향 감별사</td></tr>
+    <tr><td>생성 AI 스튜디오</td><td>결과 검증 — 환각(할루시네이션) 판별과 교차 확인</td><td>🔍 팩트 체커</td></tr>
+    <tr><td>AI 윤리위원회</td><td>AI 윤리 — 표절·딥페이크·AI 사용 밝히기</td><td>🌱 윤리 수호자</td></tr>
+  </table>
+  <ul>
+    <li><b>소요 시간</b>: 20~30분 (미션 순서 자유 → 학생별 속도 차이 흡수)</li>
+    <li><b>채점</b>: 문항당 첫 시도 20점, 재도전 10점, 3회째부터 5점 (총 400점 만점). 틀려도 배지는 동일하게 획득 → 오답 해설을 읽는 것 자체가 학습</li>
+    <li><b>저장</b>: 브라우저에 자동 저장 (같은 기기·같은 브라우저면 "이어하기" 가능)</li>
+  </ul>
+</section>
+
+<!-- 2 -->
+<section id="s2">
+  <h2><span class="no">2</span>실행 방법 (상황별 3가지)</h2>
+
+  <h3>방법 A. 인터넷 주소로 접속 — 평소 수업용 (추천)</h3>
+  <p>학생 기기에서 브라우저(크롬 권장)를 열고 아래 주소로 접속하면 끝입니다. 설치·로그인이 필요 없습니다.</p>
+  <pre>https://geroraymin.github.io/ai-literacy-mission-game/</pre>
+  <div class="box tip"><strong>💡 팁</strong>주소가 길면 QR코드로 만들어 칠판에 붙이거나, 단축주소 서비스를 이용하세요.</div>
+
+  <h3>방법 B. 교사 PC를 서버로 — 인터넷이 안 되는 교실용</h3>
+  <p>교사 PC와 학생 태블릿이 <b>같은 와이파이</b>에 연결되어 있으면, 인터넷 없이도 가능합니다. (교사 PC에 Node.js 설치 필요)</p>
+  <ol class="steps">
+    <li>교사 PC에서 프로젝트의 <span class="path">app</span> 폴더로 이동해 터미널을 연다</li>
+    <li><code>npm install</code> 실행 (처음 한 번만)</li>
+    <li><code>npm run dev -- --host</code> 실행</li>
+    <li>화면에 나오는 <b>Network</b> 주소 (예: <code>http://192.168.0.15:5173</code>)를 학생들에게 알려준다</li>
+  </ol>
+  <div class="box warn"><strong>⚠️ 주의</strong>학교 와이파이가 기기 간 통신을 차단(AP 격리)하는 경우가 있습니다. 수업 전에 태블릿 1대로 미리 접속 테스트를 해보세요.</div>
+
+  <h3>방법 C. 개발 모드 — 내용을 수정·확인할 때</h3>
+  <pre>cd D:\AI_Workspace\projects\2026-07-AI리터러시-미션게임\app
+npm run dev        <span class="c"># → http://localhost:5173 (내 컴퓨터에서만 보임)</span></pre>
+  <div class="box info"><strong>ℹ️ HTML 파일 더블클릭은 안 돼요</strong>이 게임은 모듈 방식 자바스크립트라서 <code>index.html</code>을 파일로 직접 열면 브라우저 보안 정책에 막힙니다. 반드시 위 세 가지 방법 중 하나로 실행하세요.</div>
+</section>
+
+<!-- 3 -->
+<section id="s3">
+  <h2><span class="no">3</span>조작법</h2>
+  <table>
+    <tr><th style="width:200px">동작</th><th>PC</th><th>태블릿</th></tr>
+    <tr><td>이동</td><td>방향키 ↑↓←→ 또는 W A S D</td><td>화면 왼쪽 아래 ▲▼◀▶ 버튼</td></tr>
+    <tr><td>말 걸기 / 대화 넘기기</td><td>Space 또는 Enter</td><td>오른쪽 아래 주황색 <b>A</b> 버튼, 또는 대화창 탭</td></tr>
+    <tr><td>퀴즈 답 고르기</td><td>마우스 클릭</td><td>터치</td></tr>
+    <tr><td>방 이동</td><td colspan="2">문 위로 걸어가면 자동으로 이동</td></tr>
+  </table>
+  <ul>
+    <li>머리 위에 <b style="color:#c98a00">!</b> 표시가 있는 NPC = 미션이 남은 사람, <b style="color:#3e8948">v</b> = 완료</li>
+    <li>화면 상단에서 현재 방 이름 · 지금 할 일 · 미션 진행도(1~5) · 점수를 항상 확인할 수 있음</li>
+    <li>가상 방향패드는 터치 기기에서만 자동으로 나타남</li>
+  </ul>
+</section>
+
+<!-- 4 -->
+<section id="s4">
+  <h2><span class="no">4</span>45분 수업 운영</h2>
+  <table>
+    <tr><th style="width:80px">시간</th><th style="width:80px">단계</th><th>내용</th></tr>
+    <tr><td>5분</td><td>도입</td><td>"AI에게 아무거나 다 말해도 될까?" 발문 → 게임 스토리 소개 (아리를 구하라!)</td></tr>
+    <tr><td>25분</td><td>플레이</td><td>개별 또는 2인 1조. 미션 순서 자유. 교사는 순회하며 막힌 학생과 오답 해설 함께 읽기</td></tr>
+    <tr><td>10분</td><td>토론</td><td>아래 5번의 토론 질문 중 2~3개 선택. "가장 어려웠던 문제"부터 시작하면 자연스러움</td></tr>
+    <tr><td>5분</td><td>정리</td><td>엔딩 화면 "오늘 배운 다섯 가지" 복습 카드 함께 읽기 → 실천 다짐 한 가지씩 발표</td></tr>
+  </table>
+  <h3>운영 팁</h3>
+  <ul>
+    <li>점수 경쟁보다 <b>"틀려도 배지는 똑같이 받는다"</b>를 강조 — 재도전 구조가 오답 해설을 읽게 만듭니다</li>
+    <li>일찍 끝낸 학생: 남은 방 재도전 대신 "친구 도우미" 역할 또는 토론 질문 미리 생각하게 하기</li>
+    <li>평가 활용: 엔딩 화면 캡처 제출 (칭호 + 미션별 점수가 한 화면에 표시됨)</li>
+    <li>시간이 부족하면 다음 차시에 같은 기기에서 <b>"이어하기"</b>로 계속 가능</li>
+  </ul>
+</section>
+
+<!-- 5 -->
+<section id="s5">
+  <h2><span class="no">5</span>미션별 토론 질문</h2>
+  <table>
+    <tr><th style="width:170px">미션</th><th>질문</th></tr>
+    <tr><td rowspan="2">🔒 개인정보 보호</td><td>AI에게 절대 보내면 안 되는 정보 3가지는? 왜 위험할까?</td></tr>
+    <tr><td>친구가 채팅 내용을 통째로 AI에 붙여넣으려 한다면 뭐라고 말해줄까? (남의 개인정보)</td></tr>
+    <tr><td rowspan="2">✏️ 프롬프트 작성</td><td>"숙제 도와줘"를 역할·대상·형식이 들어간 좋은 프롬프트로 직접 바꿔보자</td></tr>
+    <tr><td>좋은 프롬프트를 쓰는 능력이 왜 "질문하는 능력"과 같을까?</td></tr>
+    <tr><td rowspan="2">⚖️ 데이터 편향</td><td>편향된 데이터로 만들어진 AI가 우리 주변에 있다면 어떤 문제가 생길까? (얼굴 인식, 채용 AI)</td></tr>
+    <tr><td>"AI가 그렇게 판단했으니 공정하다"는 말의 문제점은?</td></tr>
+    <tr><td rowspan="2">🔍 결과 검증</td><td>AI의 답을 꼭 교차 확인해야 하는 경우와 그냥 써도 되는 경우를 나눠보자</td></tr>
+    <tr><td>AI가 지어낸 가짜 정보(환각)에 속았던 경험이나 뉴스 사례가 있을까?</td></tr>
+    <tr><td rowspan="2">🌱 AI 윤리</td><td>AI로 만든 결과물에 "AI 사용"을 밝히는 것이 왜 나를 지키는 일이기도 할까?</td></tr>
+    <tr><td>딥페이크가 장난으로 시작해도 큰 피해가 되는 이유는?</td></tr>
+  </table>
+</section>
+
+<!-- 6 -->
+<section id="s6">
+  <h2><span class="no">6</span>내용 수정 가이드</h2>
+  <p>교육 내용은 전부 <span class="path">app\src\data\</span> 폴더에 모여 있고, <b>따옴표 안의 문장만 고치면</b> 됩니다. 코드를 몰라도 괜찮습니다. (VS Code나 메모장으로 열기)</p>
+  <table>
+    <tr><th style="width:180px">바꾸고 싶은 것</th><th style="width:170px">파일</th><th>방법</th></tr>
+    <tr><td>퀴즈 문제·보기·해설</td><td><span class="path">quizzes.ts</span></td><td><code>prompt:</code> 문제 / <code>text:</code> 보기 / <code>explain:</code> 선택 후 설명. <code>correct: true</code>가 붙은 보기가 정답 (문항마다 1개만!)</td></tr>
+    <tr><td>NPC 대사</td><td><span class="path">dialogues.ts</span></td><td>따옴표 안 문장 수정. 대사 줄을 복사해 붙이면 대사 추가</td></tr>
+    <tr><td>캐릭터 생김새</td><td><span class="path">dialogues.ts</span>의 <code>SPRITES</code></td><td>숫자만 교체 (예: 플레이어 <code>idx: 85</code> → <code>99</code>). 캐릭터 후보는 <span class="path">assets\tiny-dungeon\Preview.png</span>를 열어 눈으로 고르기</td></tr>
+    <tr><td>미션 이름·배지·복습 카드</td><td><span class="path">missions.ts</span></td><td>따옴표 안 문장 수정</td></tr>
+    <tr><td>방 구조·가구 배치</td><td><span class="path">maps.ts</span></td><td>문자 격자 수정: <code>#</code>벽 <code>.</code>바닥 <code>B</code>책장 <code>T</code>서버 <code>t</code>테이블 <code>c</code>상자 <code>p</code>화분. 반드시 한 줄 20글자 유지!</td></tr>
+    <tr><td>엔딩 칭호·점수 기준</td><td><span class="path">..\systems\scoring.ts</span></td><td>칭호 문구와 비율(0.9, 0.7, 0.5) 수정</td></tr>
+  </table>
+  <div class="box warn"><strong>⚠️ 수정할 때 주의</strong>
+  ① 따옴표(<code>'</code>)나 쉼표(<code>,</code>)를 지우면 게임이 안 켜집니다 — 문장 <b>내용만</b> 바꾸세요.
+  ② 문장 안에 작은따옴표를 쓰고 싶으면 큰따옴표로 감싸인 부분인지 확인하세요.
+  ③ 수정 후 화면이 하얗게 나오면 마지막에 고친 파일에서 빠진 기호가 없는지 확인하세요.</div>
+  <div class="box tip"><strong>💡 제일 쉬운 방법</strong>Claude Code에게 시키세요 — "보안실 2번 문제를 이렇게 바꿔줘", "플레이어 캐릭터를 기사로 바꿔줘"라고 하면 수정하고 확인해서 커밋 제안까지 해줍니다.</div>
+</section>
+
+<!-- 7 -->
+<section id="s7">
+  <h2><span class="no">7</span>수정 → 인터넷 반영 절차</h2>
+  <p>수정 자체는 인터넷이 필요 없습니다. <b>인터넷 주소(방법 A)에 반영할 때만</b> GitHub에 올리면 됩니다.</p>
+  <ol class="steps">
+    <li>파일 수정 (6번 가이드 참고)</li>
+    <li><span class="path">app</span> 폴더에서 <code>npm run dev</code> → <code>localhost:5173</code>에서 직접 확인</li>
+    <li>프로젝트 폴더에서 터미널을 열고:<br>
+      <code>git add -A</code> → <code>git commit -m "fix: 보안실 2번 문항 수정"</code> → <code>git push</code></li>
+    <li>1~2분 기다리면 인터넷 주소에 자동 반영 (GitHub Actions가 자동으로 다시 빌드·배포)</li>
+  </ol>
+  <div class="box info"><strong>ℹ️ 배포가 됐는지 확인하려면</strong>GitHub 저장소 → <b>Actions</b> 탭에서 초록색 체크(✓)가 뜨면 완료. 게임 페이지에서 <kbd>Ctrl</kbd>+<kbd>F5</kbd>(강력 새로고침)로 확인하세요.</div>
+  <div class="box tip"><strong>💡 Claude Code를 쓴다면</strong>수정 후 "커밋하고 올려줘" 한 마디면 2~4번이 자동으로 처리됩니다.</div>
+</section>
+
+<!-- 8 -->
+<section id="s8">
+  <h2><span class="no">8</span>문제 해결 (FAQ)</h2>
+  <table>
+    <tr><th style="width:280px">증상</th><th>해결</th></tr>
+    <tr><td>화면이 하얗게/까맣게만 나온다</td><td>새로고침(<kbd>F5</kbd>) → 안 되면 <kbd>Ctrl</kbd>+<kbd>F5</kbd>. 직접 수정한 직후라면 마지막 수정 파일의 따옴표·쉼표 확인</td></tr>
+    <tr><td><code>npm run dev</code>가 "port 5173 already in use"</td><td>이미 켜져 있는 것 — 기존 터미널을 닫거나, 그냥 열려 있는 주소를 쓰면 됨</td></tr>
+    <tr><td><code>npm</code> 명령을 찾을 수 없다고 나온다</td><td>Node.js 미설치 — <a href="https://nodejs.org" target="_blank">nodejs.org</a>에서 LTS 버전 설치 후 터미널 다시 열기</td></tr>
+    <tr><td>태블릿에서 교사 PC 주소로 접속이 안 된다 (방법 B)</td><td>① 같은 와이파이인지 확인 ② <code>-- --host</code> 옵션을 붙였는지 확인 ③ Windows 방화벽 허용 팝업에서 "허용" ④ 학교망 AP 격리면 방법 A 사용</td></tr>
+    <tr><td>학생이 "이어하기"가 안 보인다고 한다</td><td>저장은 기기+브라우저 단위 — 지난 시간과 같은 기기·같은 브라우저인지 확인. 시크릿 모드는 저장 안 됨</td></tr>
+    <tr><td>진행을 처음부터 다시 시키고 싶다</td><td>타이틀에서 "새로 시작"을 누르면 기존 저장이 지워지고 처음부터 시작됨</td></tr>
+    <tr><td>이모지 배지가 네모(□)로 보인다</td><td>아주 오래된 PC의 이모지 폰트 문제 — 게임 진행에는 지장 없음. 크롬 최신 버전 권장</td></tr>
+    <tr><td>push 후에도 인터넷 주소에 반영이 안 된다</td><td>GitHub 저장소 Actions 탭에서 실패(✗) 여부 확인 → 실패 로그를 Claude Code에 보여주면 해결 가능</td></tr>
+  </table>
+</section>
+
+<!-- 9 -->
+<section id="s9">
+  <h2><span class="no">9</span>파일 구조 · 라이선스</h2>
+  <pre>2026-07-AI리터러시-미션게임\
+├─ app\                  <span class="c">← 게임 본체 (Vite + React + TypeScript)</span>
+│   ├─ src\data\         <span class="c">← ⭐ 교육 내용 수정은 여기 (퀴즈·대사·맵·미션)</span>
+│   ├─ src\components\   <span class="c">← 화면 UI (대화창, 퀴즈, HUD, 가상패드)</span>
+│   ├─ src\game\         <span class="c">← 게임 엔진 (이동, 충돌, 그리기)</span>
+│   ├─ src\systems\      <span class="c">← 점수 계산, 저장, 상태 관리</span>
+│   └─ public\assets\    <span class="c">← 타일시트 이미지 (Kenney)</span>
+├─ outputs\              <span class="c">← 수업 문서 (조작법·차시안·확장 아이디어·이 매뉴얼)</span>
+├─ assets\               <span class="c">← Kenney 원본 에셋 (캐릭터 고를 때 Preview.png 참고)</span>
+├─ 구현지시서.md          <span class="c">← 게임 요구사항 원본</span>
+└─ CURRENT.md            <span class="c">← 프로젝트 진행 상황 기록</span></pre>
+  <table>
+    <tr><th style="width:200px">자원</th><th>출처 / 라이선스</th></tr>
+    <tr><td>그래픽 (타일·캐릭터)</td><td><a href="https://kenney.nl" target="_blank">Kenney</a> — Tiny Town, Tiny Dungeon · <b>CC0</b> (출처 표기 없이 자유 사용 가능)</td></tr>
+    <tr><td>폰트</td><td><a href="https://galmuri.quiple.dev" target="_blank">Galmuri</a> (한글 픽셀 폰트) · SIL OFL</td></tr>
+    <tr><td>게임 코드·교육 콘텐츠</td><td>자체 제작 (2026-07-07)</td></tr>
+  </table>
+</section>
+
+<footer>
+  AI 연구소 탐험대 운영 매뉴얼 · 2026-07-07 · 이 파일은 브라우저에서 열어 보거나, 인쇄(Ctrl+P)하여 PDF로 저장할 수 있습니다.
+</footer>
+
+</div>
+</body>
+</html>

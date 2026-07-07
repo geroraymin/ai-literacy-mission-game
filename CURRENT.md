@@ -4,8 +4,10 @@
 
 ## 1. 지금 하는 일
 
-- 현재 작업: **게임 MVP 구현 + 플레이 검증 완료 (2026-07-07)**. 실제 수업 투입 전 사람 플레이 테스트 대기
+- 현재 작업: **게임 MVP 구현 + 플레이 검증 + GitHub Pages 배포 완료 (2026-07-07)**. 실제 수업 투입 전 사람 플레이 테스트 대기
 - 현재 기준 파일/폴더: `app\` (게임 코드), `outputs\` (수업 문서)
+- 🌐 **게임 주소**: https://geroraymin.github.io/ai-literacy-mission-game/
+- 📦 **저장소**: https://github.com/geroraymin/ai-literacy-mission-game (main에 push하면 1~2분 뒤 자동 재배포)
 
 ## 2. 최근 완료한 것 (2026-07-07)
 
